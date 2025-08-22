@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('how_it_works') }}">How It Works</a></li>
+                <li><a href="{{ url_for('view') }}">View Recommendations</a></li>
+            </ul>
+        </nav>
+        <h1>Welcome to the Movie Recommendation System</h1>
+    </header>
+    <main>
+        <section>
+            <h2>How It Works</h2>
+            <p>This system uses collaborative filtering algorithms to recommend movies based on user preferences and ratings.</p>
+            <p>Simply select your favorite movies, and the system will generate personalized recommendations for you!</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Movie Recommendation System</p>
+    </footer>
+</body>
+</html>

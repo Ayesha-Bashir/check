@@ -1,0 +1,250 @@
+:root {
+    --bs-body-bg: #1a1a1a;
+    --bs-body-color: #e9ecef;
+    --bs-card-bg: #2d2d2d;
+    --bs-border-color: #404040;
+    --bs-primary: #0d6efd;
+    --bs-success: #198754;
+    --bs-info: #0dcaf0;
+    --bs-warning: #ffc107;
+    --bs-danger: #dc3545;
+}
+
+body {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: #212529 !important;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.card {
+    background-color: var(--bs-card-bg);
+    border: 1px solid var(--bs-border-color);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.3);
+    transition: box-shadow 0.15s ease-in-out;
+}
+
+.card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+}
+
+.card-header {
+    background: linear-gradient(135deg, var(--bs-primary), #0056b3);
+    color: white;
+    border-bottom: 1px solid var(--bs-border-color);
+}
+
+.card-header h3 {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+/* Step status indicators */
+.step-status-icon {
+    font-size: 1.2em;
+    animation: checkmark-appear 0.5s ease-in-out;
+}
+
+@keyframes checkmark-appear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Disabled button styling */
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Step completion visual feedback */
+.card.step-completed .card-header {
+    background: linear-gradient(135deg, var(--bs-success), #146c43);
+}
+
+.btn {
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.form-control, .form-select {
+    background-color: #3d3d3d;
+    border-color: var(--bs-border-color);
+    color: var(--bs-body-color);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #3d3d3d;
+    border-color: var(--bs-primary);
+    color: var(--bs-body-color);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.form-label {
+    color: var(--bs-body-color);
+    font-weight: 500;
+}
+
+.alert {
+    border: none;
+    border-radius: 0.5rem;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, var(--bs-success), #20c997);
+    color: white;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, var(--bs-info), var(--bs-primary));
+    color: white;
+}
+
+.alert-warning {
+    background: linear-gradient(135deg, var(--bs-warning), #fd7e14);
+    color: #000;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, var(--bs-danger), #e74c3c);
+    color: white;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-style: italic;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+#plotImage {
+    max-width: 100%;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
+}
+
+.loading-overlay {
+    position: relative;
+}
+
+.loading-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(26, 26, 26, 0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.status-pending {
+    background-color: var(--bs-warning);
+}
+
+.status-complete {
+    background-color: var(--bs-success);
+}
+
+.status-error {
+    background-color: var(--bs-danger);
+}
+
+/* Custom button styles */
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-outline-success:hover {
+    background-color: var(--bs-success);
+    border-color: var(--bs-success);
+}
+
+/* Recommendation list styling */
+.recommendation-item {
+    background: #404040;
+    border-left: 4px solid var(--bs-primary);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.recommendation-item:hover {
+    background: #4d4d4d;
+    transition: background-color 0.2s ease;
+}
+
+.rating-badge {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+    font-weight: bold;
+    padding: 0.25rem 0.5rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .btn-lg {
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+/* Animation for form transitions */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,21 @@
+movie_id,title,genre,year
+1,Toy Story,Animation|Children's|Comedy,1995
+2,Jumanji,Adventure|Children's|Fantasy,1995
+3,Grumpier Old Men,Comedy|Romance,1995
+4,Waiting to Exhale,Comedy|Drama|Romance,1995
+5,Father of the Bride Part II,Comedy,1995
+6,Heat,Action|Crime|Thriller,1995
+7,Sabrina,Comedy|Romance,1995
+8,Tom and Huck,Adventure|Children's,1995
+9,The A-Team,Action|Adventure|Thriller,1995
+10,The Usual Suspects,Crime|Mystery|Thriller,1995
+11,The Lion King,Animation|Adventure|Children's,1994
+12,The Shawshank Redemption,Drama,1994
+13,Pulp Fiction,Crime|Drama,1994
+14,Forrest Gump,Drama|Romance,1994
+15,The Matrix,Sci-Fi|Action,1999
+16,The Godfather,Crime|Drama,1972
+17,The Dark Knight,Action|Crime|Drama,2008
+18,Inception,Sci-Fi|Action|Adventure,2010
+19,Interstellar,Sci-Fi|Adventure|Drama,2014
+20,Parasite,Thriller|Drama,2019

@@ -1,0 +1,25 @@
+# Core recommendation system dependencies
+numpy>=1.22
+pandas>=1.5
+scikit-learn>=1.7.0
+matplotlib>=3.8
+seaborn>=0.13
+
+# Web interface dependencies
+Flask
+Werkzeug>=2.3
+
+# Data handling and utilities
+scipy>=1.11
+requests
+python-dotenv
+cachetools
+
+# Optional: Development and testing
+pytest>=6.0.0
+jupyter>=1.0.0
+
+# Optional: Enhanced plotting
+plotly>=5.0
+
+# Optional: Advanced ML algorithms

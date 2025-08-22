@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Recommended Movies</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/recommend.css">
+</head>
+
+<body>
+    <div class="recommend-header">
+        <h1>Recommended for You</h1>
+        <p class="subtitle">Movies you might love, based on your picks</p>
+    </div>
+    {% if error %}
+        <div class="recommend-error">{{ error }}</div>
+    {% endif %}
+    <div class="recommend-grid">
+        {% for rec in recommendations %}
+        <div class="recommend-card"
+             tabindex="0"
+             data-movie-id="{{ rec.movie_id }}"
+             data-title="{{ rec.title }}"
+             data-genre="{{ rec.genre }}"
+             data-year="{{ rec.year }}"
+             data-pred="{{ rec.pred }}"
+             data-poster-url="{{ rec.poster_url }}">
+            <div class="recommend-poster">
+                {% if rec.poster_url %}
+                    <img src="{{ rec.poster_url }}" alt="{{ rec.title }} poster">
+                {% else %}
+                    <div class="recommend-poster-fallback">No Image</div>
+                {% endif %}
+            </div>
+            <div class="recommend-info">
+                <div class="recommend-title">{{ rec.title }}</div>
+                <div class="recommend-meta">
+                    {% if rec.year %}<span class="recommend-year">{{ rec.year }}</span>{% endif %}
+                    {% if rec.genre %}<span class="recommend-genre">{{ rec.genre }}</span>{% endif %}
+                </div>
+                {% if rec.pred %}
+                    <div class="recommend-score">Predicted: {{ rec.pred }}</div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="recommend-actions">
+        <a href="{{ url_for('view') }}" class="recommend-back">← Back to Selection</a>
+    </div>
+
+    <!-- Modal markup -->
+    <div id="movie-modal" class="movie-modal" style="display:none;">
+        <div class="movie-modal-backdrop"></div>
+        <div class="movie-modal-content">
+            <button class="movie-modal-close" aria-label="Close">&times;</button>
+            <div class="movie-modal-body"></div>
+        </div>
+    </div>
+    <script src="/static/recommend.js"></script>
+</body>
+
+</html>

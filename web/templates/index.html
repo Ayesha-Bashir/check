@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendation System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-film me-2"></i>
+                MovieLens Algorithm showcase
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('how_it_works') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('view') }}">Choose Movies</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Dataset Generation Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-database me-2"></i>
+                            Step 1: Generate Dataset
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="datasetForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="dataset_type" class="form-label">Dataset Type</label>
+                                        <select class="form-select" id="dataset_type" name="dataset_type" required>
+                                            <option value="simple">Simple (Random ratings)</option>
+                                            <option value="realistic" selected>Realistic (With biases)</option>
+                                            <option value="clustered">Clustered (User groups)</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="n_users" class="form-label">Number of Users</label>
+                                        <input type="number" class="form-control" id="n_users" name="n_users" value="50"
+                                            min="10" max="500" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="n_movies" class="form-label">Number of Movies</label>
+                                        <input type="number" class="form-control" id="n_movies" name="n_movies"
+                                            value="100" min="20" max="1000" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="seed" class="form-label">Random Seed (Optional)</label>
+                                        <input type="number" class="form-control" id="seed" name="seed"
+                                            placeholder="Leave empty for random">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <!-- Dynamic parameters based on dataset type -->
+                                    <div id="realistic_params">
+                                        <div class="mb-3">
+                                            <label for="sparsity" class="form-label">Sparsity (0.0 - 1.0)</label>
+                                            <input type="number" class="form-control" id="sparsity" name="sparsity"
+                                                value="0.95" min="0" max="1" step="0.01">
+                                            <div class="form-text">Fraction of missing ratings in the dataset</div>
+                                        </div>
+                                    </div>
+
+                                    <div id="clustered_params" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="n_clusters" class="form-label">Number of Clusters</label>
+                                            <input type="number" class="form-control" id="n_clusters" name="n_clusters"
+                                                value="4" min="2" max="10">
+                                            <div class="form-text">Number of user preference groups</div>
+                                        </div>
+                                    </div>
+
+                                    <div id="simple_params" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="min_ratings_per_user" class="form-label">Min Ratings per
+                                                User</label>
+                                            <input type="number" class="form-control" id="min_ratings_per_user"
+                                                name="min_ratings_per_user" value="2" min="1" max="20">
+                                            <div class="form-text">Minimum number of movies each user rates</div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="max_ratings_per_user" class="form-label">Max Ratings per
+                                                User</label>
+                                            <input type="number" class="form-control" id="max_ratings_per_user"
+                                                name="max_ratings_per_user" value="8" min="2" max="50">
+                                            <div class="form-text">Maximum number of movies each user rates</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="datasetBtn">
+                                <i class="fas fa-cogs me-2"></i>
+                                Generate Dataset
+                            </button>
+                        </form>
+
+                        <div id="datasetResult" class="mt-3" style="display: none;">
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-circle me-2"></i>Dataset Generated Successfully!</h5>
+                                <div id="datasetStats"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analysis Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Step 2: Run Analysis
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="analysisForm" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="algorithm_type" class="form-label">Algorithm Type</label>
+                                        <select class="form-select" id="algorithm_type" name="algorithm_type">
+                                            <option value="original" selected>MovieLens Original (Collaborative
+                                                Filtering)</option>
+                                            <option value="extended">MovieLens Extended (Matrix Factorization)</option>
+                                        </select>
+                                        <div class="form-text">
+                                            <small>
+                                                <strong>Original:</strong> Classic user-based and item-based
+                                                collaborative filtering<br>
+                                                <strong>Extended:</strong> Advanced matrix factorization with SVD and
+                                                bias terms
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div id="original_params">
+                                        <div class="mb-3">
+                                            <label for="similarity_method" class="form-label">Similarity Method</label>
+                                            <select class="form-select" id="similarity_method" name="similarity_method">
+                                                <option value="cosine" selected>Cosine Similarity</option>
+                                                <option value="pearson">Pearson Correlation</option>
+                                                <option value="jaccard">Jaccard Similarity</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="recommendation_method" class="form-label">CF Method</label>
+                                            <select class="form-select" id="recommendation_method"
+                                                name="recommendation_method">
+                                                <option value="user_based" selected>User-Based</option>
+                                                <option value="item_based">Item-Based</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div id="extended_params" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="n_factors" class="form-label">Latent Factors</label>
+                                            <input type="number" class="form-control" id="n_factors" name="n_factors"
+                                                value="20" min="5" max="100">
+                                            <div class="form-text">Number of latent factors for matrix factorization
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="target_user" class="form-label">Target User ID</label>
+                                        <input type="number" class="form-control" id="target_user" name="target_user"
+                                            value="0" min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="n_recommendations" class="form-label">Number of
+                                            Recommendations</label>
+                                        <input type="number" class="form-control" id="n_recommendations"
+                                            name="n_recommendations" value="5" min="1" max="20">
+                                    </div>
+                                    <div class="mb-3" id="k_neighbors_div">
+                                        <label for="k_neighbors" class="form-label">K Neighbors</label>
+                                        <input type="number" class="form-control" id="k_neighbors" name="k_neighbors"
+                                            value="5" min="1" max="20">
+                                        <div class="form-text">Number of similar users/items to consider</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-success" id="analysisBtn" disabled>
+                                <i class="fas fa-play me-2"></i>
+                                Run Analysis
+                            </button>
+                        </form>
+
+                        <div id="analysisPlaceholder" class="text-muted">
+                            <i class="fas fa-arrow-up me-2"></i>
+                            Generate a dataset first to enable analysis options.
+                        </div>
+
+                        <div id="analysisResult" class="mt-3" style="display: none;">
+                            <div class="alert alert-info">
+                                <h5><i class="fas fa-brain me-2"></i>Analysis Complete!</h5>
+                                <div id="recommendationsList"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualization Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-chart-bar me-2"></i>
+                            Step 3: Visualizations
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="visualizationControls" style="display: none;">
+                            <div class="mb-3">
+                                <button class="btn btn-info me-2" onclick="generateVisualization('analysis')"
+                                    id="analysisVizBtn" disabled>
+                                    <i class="fas fa-chart-pie me-2"></i>
+                                    Data Analysis
+                                </button>
+                                <button class="btn btn-info" onclick="generateVisualization('recommendations')"
+                                    id="recVizBtn" disabled>
+                                    <i class="fas fa-star me-2"></i>
+                                    Recommendations
+                                </button>
+                            </div>
+
+                            <div id="visualizationResult" class="text-center">
+                                <div id="loadingSpinner" class="spinner-border text-primary" role="status"
+                                    style="display: none;">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <img id="plotImage" class="img-fluid" style="display: none;" alt="Analysis Plot">
+                            </div>
+                        </div>
+
+                        <div id="visualizationPlaceholder" class="text-muted">
+                            <i class="fas fa-arrow-up me-2"></i>
+                            Complete the analysis to generate visualizations.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-download me-2"></i>
+                            Step 4: Download Results
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="downloadControls" style="display: none;">
+                            <p class="mb-3">
+                                Download a complete package containing:
+                            </p>
+                            <ul class="mb-3">
+                                <li>Generated dataset (JSON and CSV formats)</li>
+                                <li>Recommendation results</li>
+                                <li>Analysis metadata</li>
+                                <li>README with usage instructions</li>
+                            </ul>
+                            <button class="btn btn-success btn-lg" onclick="downloadResults()" id="downloadBtn">
+                                <i class="fas fa-file-archive me-2"></i>
+                                Download Analysis Package
+                            </button>
+                        </div>
+
+                        <div id="downloadPlaceholder" class="text-muted">
+                            <i class="fas fa-arrow-up me-2"></i>
+                            Complete the analysis to enable downloads.
+                        </div>
+
+                        <div id="downloadResult" class="mt-3" style="display: none;">
+                            <div class="alert alert-success">
+                                <h5><i class="fas fa-check-circle me-2"></i>Download Complete!</h5>
+                                <p class="mb-0">Your analysis package has been downloaded successfully.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Restart Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="mb-0">
+                            <i class="fas fa-redo me-2"></i>
+                            Restart Process
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="restartControls" style="display: none;">
+                            <p class="mb-3">
+                                All steps have been completed successfully! You can start a new analysis with different
+                                parameters.
+                            </p>
+                            <button class="btn btn-warning btn-lg" onclick="restartProcess()">
+                                <i class="fas fa-redo me-2"></i>
+                                Start New Analysis
+                            </button>
+                        </div>
+
+                        <div id="restartPlaceholder" class="text-muted">
+                            <i class="fas fa-arrow-up me-2"></i>
+                            Complete all steps to restart the process.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-question-circle me-2"></i>
+                For any questions reference the
+                <a href="https://github.com/taban3010/movielens-extended/blob/master/README.md" target="_blank"
+                    class="text-info text-decoration-none">
+                    README.md
+                    <i class="fas fa-external-link-alt ms-1" style="font-size: 0.8em;"></i>
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+
+</html>
